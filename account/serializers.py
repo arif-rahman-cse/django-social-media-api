@@ -1,6 +1,7 @@
-from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework import serializers
+from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth.models import BaseUserManager
 
 User = get_user_model()
 
@@ -24,11 +25,44 @@ class AuthUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name')
         read_only_fields = ('id', 'username')
 
-    def get_auth_token(self, obj):
+    @staticmethod
+    def get_auth_token(obj):
         token = Token.objects.create(user=obj)
         return token.key
 
 
 class EmptySerializer(serializers.Serializer):
-    pass
+    def update(self, instance, validated_data):
+        pass
 
+    def create(self, validated_data):
+        pass
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    """
+    A user serializer for registering the user
+    """
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name')
+
+    @staticmethod
+    def validate_username(self, value):
+        user = User.objects.filter(username=value)
+        if user:
+            raise serializers.ValidationError("Username already taken")
+        return value
+
+    @staticmethod
+    def validate_email(self, value):
+        user = User.objects.filter(email=value)
+        if user:
+            raise serializers.ValidationError("Email already taken")
+        return BaseUserManager.normalize_email(value)
+
+    @staticmethod
+    def validate_password(self, value):
+        password_validation.validate_password(value)
+        return value
