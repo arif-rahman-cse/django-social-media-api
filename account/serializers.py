@@ -67,6 +67,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    new_password_2 = serializers.CharField(required=True)
 
     def validate_current_password(self, value):
         if not self.context['request'].user.check_password(value):

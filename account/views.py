@@ -51,13 +51,21 @@ class AuthViewSet(viewsets.GenericViewSet):
         data = {'success': 'You have been logged out'}
         return Response(data=data, status=status.HTTP_200_OK)
 
-    @action(methods=['POST'], detail=False, permission_classes=[IsAuthenticated, ])
+    @action(methods=['POST'], detail=False, permission_classes=[IsAuthenticated, ], url_path='change-password')
     def password_change(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        if serializer.validated_data['new_password'] != serializer.validated_data['new_password_2']:
+            data = {
+                "error": "Please provide same password for both new password fields"
+            }
+            return Response(data=data, status=status.HTTP_406_NOT_ACCEPTABLE)
         request.user.set_password(serializer.validated_data['new_password'])
         request.user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        data = {
+            "success": "Password reset successful!"
+        }
+        return Response(data=data, status=status.HTTP_200_OK)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

@@ -1,11 +1,13 @@
 # Django Social Media API
 This project contains the APIs required for the proposed social media app.
-> Please note that, trailing slash("/") is mandatory for all routes.
+- Please note that, trailing slash("/") is mandatory for all routes.
+- Please add your auth_token in authorization header for the APIs that require login. Example: ```{"Authorization": Token 025d83124c02af9c249b7dbc3a1051234555f107}```
 
 ## Account
 #### Login
 - Request method: POST
 - URL: api/account/login/
+- Login required: False
 - Request:
     ```json
     {
@@ -34,6 +36,7 @@ This project contains the APIs required for the proposed social media app.
 #### Logout
 - Request method: POST
 - URL: api/account/logout/
+- Login required: True
 - Request: None
 - Response:
     ```json
@@ -41,11 +44,11 @@ This project contains the APIs required for the proposed social media app.
         "success": "You have been logged out"
     }
     ```
-> Please add your auth_token in authorization header. Example: ```{"Authorization": Token 025d83124c02af9c249b7dbc3a1051234555f107}```
-
+  
 #### Register
 - Request method: POST
 - URL: api/account/register/
+- Login required: False
 - Request: 
     ```json
     {
@@ -83,3 +86,42 @@ This project contains the APIs required for the proposed social media app.
     }
     ```
 > Registering a user automatically logs him/her in. Use the given token for further operations.
+
+#### Change Password
+- Request method: POST
+- URL: api/account/change-password/
+- Login required: True
+- Request: 
+    ```json
+    {
+        "current_password": "current-pass",
+        "new_password": "new-pass",
+        "new_password_2": "new-pass"
+    }
+    ```
+- Response:
+    ```json
+    {
+        "success": "Password reset successful!"
+    }
+    ```
+    or
+    ```json
+    {
+        "current_password": [
+            "This field may not be blank."
+        ],
+        "new_password": [
+            "This field may not be blank."
+        ],
+        "new_password_2": [
+            "This field may not be blank."
+        ]
+    }
+    ```
+    or 
+    ```json
+    {
+        "error": "Please provide same password for both new password fields"
+    }
+    ```
