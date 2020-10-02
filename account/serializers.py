@@ -25,9 +25,8 @@ class AuthUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'auth_token')
         read_only_fields = ('id', 'username')
 
-    @staticmethod
-    def get_auth_token(obj):
-        token = Token.objects.create(user=obj)
+    def get_auth_token(self, obj):
+        token = Token.objects.get_or_create(user=obj)[0]
         return token.key
 
 

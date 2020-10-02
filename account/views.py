@@ -1,12 +1,12 @@
-from django.contrib.auth import get_user_model, logout
-from django.core.exceptions import ImproperlyConfigured
+from django.contrib.auth import get_user_model, logout, authenticate
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from . import serializers
-from .utils import get_and_authenticate_user, create_user_account
+from .utils import create_user_account
 
 User = get_user_model()
 
@@ -24,8 +24,13 @@ class AuthViewSet(viewsets.GenericViewSet):
     def login(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = get_and_authenticate_user(**serializer.validated_data)
-        data = serializers.AuthUserSerializer(user).data
+        user = authenticate(**serializer.validated_data)
+        if user is None:
+            data = {
+                "error": "Invalid username or password. Please try again with a valid username or password!"
+            }
+        else:
+            data = serializers.AuthUserSerializer(user).data
         return Response(data=data, status=status.HTTP_200_OK)
 
     @action(methods=['POST', ], detail=False)
@@ -38,6 +43,10 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(methods=['POST', ], detail=False)
     def logout(self, request):
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            pass
         logout(request)
         data = {'success': 'You have been logged out'}
         return Response(data=data, status=status.HTTP_200_OK)
