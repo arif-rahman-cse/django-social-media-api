@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # Application definition
 
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     # DRF apps
     'rest_framework',
     'rest_framework.authtoken',
+    'django_rest_passwordreset',
     # My apps
     'account.apps.AccountConfig',
 ]

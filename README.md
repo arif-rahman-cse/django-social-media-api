@@ -125,3 +125,55 @@ This project contains the APIs required for the proposed social media app.
         "error": "Please provide same password for both new password fields"
     }
     ```
+  
+#### Forget Password
+- Request method: POST
+- URL: api/account/reset-password/
+- Login required: False
+- Request: 
+    ```json
+    {
+        "email": "someone@example.com"
+    }
+    ```
+- Response:
+    ```json
+    {
+        "status": "OK"
+    }
+    ```
+    or
+    ```json
+    {
+        "email": [
+            "There is no active user associated with this e-mail address or the password can not be changed"
+        ]
+    }
+  
+**Email will be sent to user if the user is registered or email is valid. Then use the token to reset password.**
+
+- Request method: POST
+- URL: api/account/reset-password/confirm/
+- Login required: False
+- Request: 
+    ```json
+    {
+        "token":"0b92384dd8fd5141b9",
+        "password":"kaykobad123"
+    }
+    ```
+- Response:
+    ```json
+    {
+        "status": "OK"
+    }
+    ```
+    or
+    ```json
+    {
+        "password": [
+            "The password is too similar to the username."
+        ]
+    }
+  
+    
