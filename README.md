@@ -30,3 +30,15 @@ This project contains the APIs required for the proposed social media app.
         "error": "Invalid username or password. Please try again with a valid username or password!"
     }
     ```
+  
+#### Logout
+- Request method: POST
+- URL: api/account/logout/
+- Request: None
+- Response:
+    ```json
+    {
+        "success": "You have been logged out"
+    }
+    ```
+  > Please add your auth_token in authorization header. Example: ```{"Authorization": Token 025d83124c02af9c249b7dbc3a1051234555f107}```
