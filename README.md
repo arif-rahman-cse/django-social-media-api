@@ -202,4 +202,44 @@ This project contains the APIs required for the proposed social media app.
     {
         "detail": "Authentication credentials were not provided."
     }
-    
+  
+#### Update Profile
+- Request method: POST
+- URL: api/account/my-profile/
+- Login required: True
+- Request:
+    ```json
+    {
+        "first_name": "Kaykobad",
+        "last_name": "Reza",
+        "mobile_number": "01712345678",
+        "bio": "I am a developer",
+        "date_of_birth": "YYYY-MM-DD",
+        "gender": "male"
+    }
+    ```
+- Response:
+    ```json
+    {
+        "user_id": 1,
+        "profile_id": 1,
+        "username": "kaykobad",
+        "email": "kaykobad@gmail.com",
+        "first_name": "Kaykobad",
+        "last_name": "Reza",
+        "mobile_number": "01712345678",
+        "bio": "I am a developer",
+        "date_of_birth": "1995-01-01",
+        "gender": "male",
+        "profile_picture": "/media/profile_picture/685.jpg"
+    }
+    ```
+    or
+    ```json
+    {
+        "date_of_birth": [
+            "Date has wrong format. Use one of these formats instead: YYYY-MM-DD."
+        ]
+    }
+    ```
+> first_name and last_name is mandatory field when updating profile. If you are updating profile picture, be sure to upload it as multipart-form-data with key "profile_picture".

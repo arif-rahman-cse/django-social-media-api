@@ -67,10 +67,6 @@ class EmptySerializer(serializers.Serializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    """
-    A user serializer for registering the user
-    """
-
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name')
