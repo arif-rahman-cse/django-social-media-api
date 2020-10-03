@@ -2,8 +2,36 @@ from rest_framework.authtoken.models import Token
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.models import BaseUserManager
+from .models import Profile
 
 User = get_user_model()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.ReadOnlyField(source='user.id')
+    profile_id = serializers.IntegerField(source='pk', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+
+    class Meta:
+        model = Profile
+        fields = ('user_id', 'profile_id', 'username', 'email', 'first_name', 'last_name',
+                  'mobile_number', 'bio', 'date_of_birth', 'gender', 'profile_picture')
+
+    def update(self, instance, validated_data):
+        # retrieve the User
+        user_data = validated_data.pop('user', None)
+        for attr, value in user_data.items():
+            setattr(instance.user, attr, value)
+
+        # retrieve Profile
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.user.save()
+        instance.save()
+        return instance
 
 
 class UserLoginSerializer(serializers.Serializer):

@@ -176,4 +176,30 @@ This project contains the APIs required for the proposed social media app.
         ]
     }
   
+#### My Profile
+- Request method: GET
+- URL: api/account/my-profile/
+- Login required: True
+- Request: None
+- Response:
+    ```json
+    {
+        "user_id": 1,
+        "profile_id": 1,
+        "username": "kaykobad",
+        "email": "kaykobad@gmail.com",
+        "first_name": "",
+        "last_name": "",
+        "mobile_number": null,
+        "bio": null,
+        "date_of_birth": null,
+        "gender": null,
+        "profile_picture": "/media/default_profile_pic.png"
+    }
+    ```
+    or
+    ```json
+    {
+        "detail": "Authentication credentials were not provided."
+    }
     

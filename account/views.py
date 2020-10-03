@@ -1,14 +1,39 @@
 from django.contrib.auth import get_user_model, logout, authenticate
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
-from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from . import serializers
 from .utils import create_user_account
+from .models import Profile
 
 User = get_user_model()
+
+
+# class ProfileViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+#     """
+#     This viewset automatically provides `list`, `create`, `retrieve`,
+#     `update` and `destroy` actions.
+#     """
+#     queryset = Profile.objects.all()
+#     serializer_class = serializers.UserProfileSerializer
+#     permission_classes = [IsAuthenticated, ]
+
+
+class UpdateProfileView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = serializers.UserProfileSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request):
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+        serializer = serializers.UserProfileSerializer(user_profile)
+        return Response(serializer.data)
 
 
 class AuthViewSet(viewsets.GenericViewSet):
